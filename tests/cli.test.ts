@@ -29,6 +29,7 @@ test("init writes paper.json, StyleX tokens and an AGENTS.md section, and is ide
   expect(read(dir, "src/components/paper/tokens.stylex.ts")).toContain("stylex.defineVars");
   expect(first.agents.startsWith("# My project\n\nOwn rules.\n")).toBe(true);
   expect(first.agents).toContain("@stylexjs/unplugin");
+  expect(first.agents).toContain("Import at least one CSS file");
 
   expect(paper(dir, "init").code).toBe(0);
   expect(read(dir, "AGENTS.md")).toBe(first.agents);

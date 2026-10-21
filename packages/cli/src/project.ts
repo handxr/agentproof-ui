@@ -44,6 +44,7 @@ function agentBlock(config: PaperConfig, registry: Registry): string {
     "- Add components with `npx paper add <name>`. Do not copy or rewrite them by hand.",
     `- Style with StyleX (\`stylex.create\`) and the tokens in \`${config.componentsDir}/tokens.stylex.ts\` (\`npx paper tokens\`). No raw hex/rgb colors.`,
     "- StyleX needs its bundler plugin (e.g. `@stylexjs/unplugin` for Vite/Next, or `@stylexjs/babel-plugin`); without it `stylex.create` throws at runtime.",
+    "- Import at least one CSS file from your entry (e.g. `import \"./index.css\"` in `main.tsx`). The StyleX plugin injects its generated CSS into the bundle's CSS; with no CSS import there is no stylesheet and components render unstyled.",
     "- Run `npx paper check` before committing; it exits non-zero on violations.",
     `- Installed: ${installed}.`,
     END,
