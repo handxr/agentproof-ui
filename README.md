@@ -20,7 +20,7 @@ The example design system is `paper`: black on white, Geist, a 35rem column, sty
 
 ## Quick start
 
-Requires Node 22 and pnpm.
+Requires Node 24 (LTS) and pnpm.
 
 ```sh
 git clone https://github.com/handxr/agentproof-ui && cd agentproof-ui
