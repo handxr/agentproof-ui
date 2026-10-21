@@ -40,4 +40,4 @@ The CLI itself is not meant to be a project dependency. Run it with `npx`, and p
 
 ## In a fork
 
-Change `DEFAULT_REGISTRY` in `registry.ts` to your repo, so `paper init` works without `--registry`. Since `add` overwrites copied files, keep local changes small or upstream them into your registry.
+Change `DEFAULT_REGISTRY` in `registry.ts` to your repo, so `paper init` works without `--registry`. `add` and `update` skip files changed locally, so local changes survive updates. Keep them small, or move them into your registry.
