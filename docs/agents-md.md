@@ -26,7 +26,7 @@ The block is short on purpose. It points at commands and lists facts. Component 
 
 - **Managed.** Only the text between the markers belongs to `paper`. If the file exists, `init` replaces the block in place or appends it. Everything outside is untouched.
 - **Idempotent.** Running `init` or `add` twice gives byte-identical files. `add` and `update` re-render the block with the new installed list.
-- **Checked.** `paper check` exits 1 when the block differs from what the current registry and `paper.json` would write, and suggests `paper update`.
+- **Checked.** `paper check` exits 1 when the block differs from what the current registry and `paper.json` would write, and suggests `paper update`. It also exits 1, with `agentBlock: "malformed"`, when a marker is missing or the end marker comes first. `init`, `add` and `update` refuse to touch a malformed block, so a broken marker never costs the user the text below it.
 - **Agent file.** The CLI writes to `CLAUDE.md` if it exists and `AGENTS.md` does not. Otherwise it writes to `AGENTS.md`.
 
 The block includes setup gotchas found while building the example. StyleX needs its bundler plugin, and the entry must import at least one CSS file. Without a CSS import, the build has no stylesheet for StyleX to add its CSS to, and components render unstyled.

@@ -21,18 +21,26 @@ Before writing a file, the CLI compares three things: the file on disk, its reco
 
 | Status | Meaning | `add` / `init` | `update` |
 | --- | --- | --- | --- |
-| `new` | Not on disk | Writes it | Writes it |
+| `new` | Not on disk, and paper never wrote it | Writes it | Writes it |
 | `unchanged` | Already equals the registry | Leaves it | Leaves it |
 | `clean` | Equals what paper last wrote | Replaces it | Replaces it |
 | `modified` | Changed locally, or present with no record and different from the registry | Fails, writes nothing | Skips it and exits 1 |
+| `deleted` | Not on disk, but paper recorded writing it, so someone removed it | Fails, writes nothing | Skips it and exits 1 |
+| `removed` | Recorded, but the registry entry no longer ships it | Not checked | Deletes it if it equals its record and drops the record. Keeps a modified one, reports it under `skipped` and exits 1 |
 
-`--force` overwrites `modified` files in every command.
+`--force` overwrites `modified` files, restores `deleted` ones and deletes `removed` ones, edited or not.
 
-`paper update [name...]` updates the named components, or every installed component and the token files when you name none. It prints `updated`, `unchanged`, `skipped` and `missing`, with `--json` for agents. It exits 1 when it skipped a file, so an agent cannot read a partial update as success. It also rewrites the AGENTS.md block.
+A deleted file counts as a local change because a missing file with a record means a person or agent removed it. Writing it back would undo that choice without a word.
+
+`paper update [name...]` updates the named components, or every installed component and the token files when you name none. It prints `updated`, `unchanged`, `removed`, `skipped` and `missing`, with `--json` for agents. The text output says why each file was skipped: modified, deleted locally, or modified and no longer in the registry. It exits 1 when it skipped a file, so an agent cannot read a partial update as success. It also rewrites the AGENTS.md block.
 
 An installed component that the registry no longer has is reported under `missing` and left on disk, and the rest still update. `update` exits 1 in that case, with or without `--force`, because there is nothing to update it to. Delete its files and its `paper.json` entry, or point `--registry` at a registry that has it.
 
-`paper check` compares the AGENTS.md block with the block that the current registry and `paper.json` would produce. If they differ, it reports `agentBlock: "stale"` and exits 1. If the block is not there, it reports `"missing"` and exits 1. A project that never reruns the CLI still finds out when the block text changes upstream.
+`paper check` compares the AGENTS.md block with the block that the current registry and `paper.json` would produce. If they differ, it reports `agentBlock: "stale"` and exits 1. If the block is not there, it reports `"missing"` and exits 1. If the file has a start marker with no end marker, or the end marker comes first, it reports `"malformed"` and exits 1. A project that never reruns the CLI still finds out when the block text changes upstream.
+
+`init`, `add` and `update` fail on a malformed block before they write anything, and the error says to fix the markers. Rewriting it would mean guessing where paper's text ends. A wrong guess deletes the user's text below the marker.
+
+The registry schema rejects a registry where two components, or a component and the token files, ship the same path. Two owners of one file would overwrite each other on every `update`. The CLI checks this when it loads a registry, and `scripts/build-registry.ts` runs the same schema before it writes `registry.json`.
 
 Old `paper.json` files with `installed` as a list of names still parse. Those components have no recorded files, so a file that differs from the registry counts as `modified`. The first `update` or `add` writes the new form.
 
@@ -45,8 +53,9 @@ Old `paper.json` files with `installed` as a list of names still parse. Those co
 
 ## Where in code
 
-- Hashes, file statuses and writes: `planFiles`, `applyPlan` and `assertNoConflicts` in [`packages/cli/src/project.ts`](../packages/cli/src/project.ts)
-- Config shape and the old-form migration: [`packages/cli/src/schema.ts`](../packages/cli/src/schema.ts)
+- Hashes, file statuses and writes: `planFiles`, `applyPlan`, `pruneOrphans` and `assertNoConflicts` in [`packages/cli/src/project.ts`](../packages/cli/src/project.ts)
+- Block markers: `writeAgentBlock` and `assertAgentBlockWellFormed` in the same file
+- Config shape, the old-form migration and the duplicate path check: [`packages/cli/src/schema.ts`](../packages/cli/src/schema.ts)
 - Commands: [`commands/update.ts`](../packages/cli/src/commands/update.ts), [`commands/add.ts`](../packages/cli/src/commands/add.ts), [`commands/check.ts`](../packages/cli/src/commands/check.ts)
 - Tests: [`tests/cli.test.ts`](../tests/cli.test.ts)
 

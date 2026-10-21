@@ -76,14 +76,14 @@ type Violation = { rule: string; file: string; line: number; message: string };
 
 ## Boundaries
 
-The CLI parses `registry.json` and `paper.json` with zod in `packages/cli/src/schema.ts`. Code past that point trusts the types.
+The CLI parses `registry.json` and `paper.json` with zod in `packages/cli/src/schema.ts`. Code past that point trusts the types. The registry schema also rejects two entries that ship the same path.
 
 ## Idempotency
 
-- `init` keeps `installed` from an existing `paper.json`. It writes the token files, and fails on a locally modified one unless `--force`.
-  It rewrites the block between `<!-- paper:start -->` and `<!-- paper:end -->` in place, or appends the block if it is missing.
-- `add` writes the component files, fails on locally modified ones unless `--force`, keeps `installed` sorted, and rewrites the block.
-- `update` replaces files that still match their recorded hash and skips the rest. See [Updates](docs/updates.md).
+- `init` keeps `installed` from an existing `paper.json`. It writes the token files, and fails on a locally modified or deleted one unless `--force`.
+  It rewrites the block between `<!-- paper:start -->` and `<!-- paper:end -->` in place, or appends the block if it is missing. If only one marker is there, or the end marker comes first, it fails and writes nothing.
+- `add` writes the component files, fails on locally modified or deleted ones unless `--force`, keeps `installed` sorted, and rewrites the block.
+- `update` replaces files that still match their recorded hash, skips modified and deleted ones, and deletes clean files the registry no longer ships. See [Updates](docs/updates.md).
 Running any of them twice gives byte-identical files.
 
 ## Agent file
