@@ -79,6 +79,8 @@ Change:
 | AGENTS.md block text | `agentBlock` in `packages/cli/src/project.ts`, including the `npx paper` commands and the StyleX line |
 | `llms.txt` title and intro | `renderLlms` in `scripts/build-registry.ts` |
 
+The `npx paper` commands in `llms.txt` and the AGENTS.md block assume the fork publishes its CLI under its own name. In this repo, run the CLI with `pnpm paper` from `apps/example`.
+
 If you rename the package, also update the `--filter @paper/cli` references in the root `package.json` (`build:cli`), `apps/example/package.json` (`sync`) and `tests/cli.test.ts`. Run `pnpm generate`.
 
 Done when `pnpm build:cli` succeeds and `pnpm test` passes. Why: [A CLI for agents](cli-for-agents.md), [AGENTS.md block](agents-md.md) and [Distribution](distribution.md).
