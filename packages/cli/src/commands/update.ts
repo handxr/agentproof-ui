@@ -9,7 +9,7 @@ export const update: Command = async ({ cwd, args, flags }) => {
   const names = args.length ? args : Object.keys(config.installed).sort();
   for (const name of names) {
     if (!config.installed[name]) throw new Error(`"${name}" is not installed; use \`paper add ${name}\``);
-    if (!registry.components.some((c) => c.name === name)) throw new Error(`"${name}" is no longer in the registry`);
+    if (!registry.components.some((c) => c.name === name)) throw new Error(`"${name}" is no longer in the registry; delete its files and its entry in paper.json, or pass --registry with one that has it`);
   }
   const skip = (f: PlannedFile) => f.status === "modified" && !flags.force;
   const all: PlannedFile[] = [];
