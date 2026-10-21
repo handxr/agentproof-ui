@@ -47,7 +47,9 @@ pnpm paper docs button --json
 pnpm paper check
 ```
 
-To build your own system on it, read [Forking](docs/forking.md).
+## Make your own
+
+To turn a fork into your own design system and CLI, follow [Forking](docs/forking.md). It lists the steps in order, with the files to change and a check that tells you each step is done. An agent can follow it step by step.
 
 ## Docs
 

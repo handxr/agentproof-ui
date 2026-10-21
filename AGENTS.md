@@ -2,6 +2,8 @@
 
 Reference architecture for design systems that agents can use. The example system is `paper`, built with React and StyleX. The CLI is also `paper`. Read `ARCHITECTURE.md` for the data shapes and `docs/` for the decisions.
 
+To adapt this repo to your own design system, follow `docs/forking.md`.
+
 ## Commands
 
 - `pnpm check`: runs the typecheck, lint, and tests, and checks that generated files are up to date. It must pass before every commit.
