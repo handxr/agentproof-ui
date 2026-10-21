@@ -43,6 +43,7 @@ export async function buildRegistry(): Promise<Registry> {
       { path: "tokens.stylex.ts", content: read(componentsDir + "tokens.stylex.ts") },
       { path: "tokens.css", content: read(root + "tokens/tokens.css") },
     ],
+    tokenValues: JSON.parse(read(root + "tokens/tokens.json"), (k, v) => (k === "$description" ? undefined : v)),
     components: await Promise.all(componentNames().map(buildEntry)),
   };
 }

@@ -7,6 +7,7 @@ const prop = z.object({ name: z.string(), type: z.string(), required: z.boolean(
 export const registrySchema = z.object({
   version: z.string(),
   tokens: z.array(file),
+  tokenValues: z.record(z.string(), z.record(z.string(), z.union([z.string(), z.object({ light: z.string(), dark: z.string() })]))),
   components: z.array(
     z.object({
       name: z.string(),
