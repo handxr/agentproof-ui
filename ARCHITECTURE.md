@@ -33,7 +33,8 @@ type Doc<C> = {
 ## Rules table (`registry/rules/index.ts`)
 
 ```ts
-type Rule = { description: string; check(file: string, source: string): Omit<Violation, "rule" | "file">[] };
+type Finding = { line: number; message: string };
+type Rule = { description: string; check(file: string, source: string): Finding[] };
 const rules = { "no-raw-color": noRawColor } satisfies Record<string, Rule>;
 ```
 
@@ -70,7 +71,7 @@ type PaperConfig = { registry: string; componentsDir: string; installed: Record<
 ## Violation
 
 ```ts
-type Violation = { rule: RuleId; file: string; line: number; message: string };
+type Violation = { rule: string; file: string; line: number; message: string };
 ```
 
 ## Boundaries

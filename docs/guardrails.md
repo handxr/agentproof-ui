@@ -6,7 +6,7 @@ A rule written in prose is a suggestion. "Use color tokens" in a doc does not st
 
 ## Decision
 
-Any rule that code can check is a check. `paper check` scans the project's `.ts`, `.tsx`, `.js`, `.jsx`, and `.css` files. It skips `node_modules`, `.git`, `dist`, `build`, `.next`, and `coverage`. It runs every rule, prints `file:line rule message`, and exits 1 if any rule fails. With `--json` it returns `{ ok, violations }`.
+Any rule that code can check is a check. `paper check` scans the project's `.ts`, `.tsx`, `.js`, `.jsx`, and `.css` files. It skips `node_modules`, `.git`, `dist`, `build`, `.next`, and `coverage`. It runs every rule and prints `file:line rule message`. It also checks the AGENTS.md block (see [AGENTS.md block](agents-md.md)). It exits 1 if a rule finds a violation or the block is stale or missing. With `--json` it returns `{ ok, violations, agentBlock }`.
 
 Rules live in a table:
 

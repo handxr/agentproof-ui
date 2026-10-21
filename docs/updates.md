@@ -32,7 +32,7 @@ Before writing a file, the CLI compares three things: the file on disk, its reco
 
 An installed component that the registry no longer has is reported under `missing` and left on disk, and the rest still update. `update` exits 1 in that case, with or without `--force`, because there is nothing to update it to. Delete its files and its `paper.json` entry, or point `--registry` at a registry that has it.
 
-`paper check` compares the AGENTS.md block with the block that the current registry and `paper.json` would produce. If they differ, it reports `agentBlock: "stale"` and exits 1. A project that never reruns the CLI still finds out when the block text changes upstream.
+`paper check` compares the AGENTS.md block with the block that the current registry and `paper.json` would produce. If they differ, it reports `agentBlock: "stale"` and exits 1. If the block is not there, it reports `"missing"` and exits 1. A project that never reruns the CLI still finds out when the block text changes upstream.
 
 Old `paper.json` files with `installed` as a list of names still parse. Those components have no recorded files, so a file that differs from the registry counts as `modified`. The first `update` or `add` writes the new form.
 
