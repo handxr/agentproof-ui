@@ -2,11 +2,11 @@
 
 ## Problem
 
-A rule written in prose is a suggestion. "Use color tokens" in a doc does not stop an agent from writing `color: "#333"`, and nobody notices until review, if then.
+A rule written in prose is a suggestion. "Use color tokens" in a doc does not stop an agent from writing `color: "#333"`, and nothing flags it before review.
 
 ## Decision
 
-Any rule that code can check is a check. `paper check` scans the project's `.ts`, `.tsx`, `.js`, `.jsx` and `.css` files (skipping `node_modules`, `.git`, `dist`, `build`, `.next` and `coverage`), runs every rule, prints `file:line rule message` and exits 1 if anything fails. With `--json` it returns `{ ok, violations }`.
+Any rule that code can check is a check. `paper check` scans the project's `.ts`, `.tsx`, `.js`, `.jsx`, and `.css` files. It skips `node_modules`, `.git`, `dist`, `build`, `.next`, and `coverage`. It runs every rule, prints `file:line rule message`, and exits 1 if any rule fails. With `--json` it returns `{ ok, violations }`.
 
 Rules live in a table:
 
@@ -18,7 +18,7 @@ A rule is `{ description, check(file, source) }` and returns findings with a lin
 
 The same rules guard the system itself. `tests/registry.test.tsx` runs `no-raw-color` on every component.
 
-Today there is one rule, `no-raw-color`. It flags hex, `rgb()`, `rgba()`, `hsl()` and `hsla()` outside the token files.
+Today there is one rule, `no-raw-color`. It flags hex, `rgb()`, `rgba()`, `hsl()`, and `hsla()` outside the token files.
 
 Practices in docs can link to a rule with `rule: "no-raw-color"`. `RuleId` is the table's keys, so a link to a missing rule does not compile.
 

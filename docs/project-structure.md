@@ -44,7 +44,7 @@ Code flows one way: `tokens.json` and `registry/components/*` feed `scripts/buil
 
 ## Alternatives rejected
 
-- **Separate repos for CLI, tokens and components.** Versions drift, and a fork needs three repos.
+- **Separate repos for the CLI, tokens, and components.** Versions drift, and a fork needs three repos.
 - **A published component package.** See [Distribution](distribution.md).
 
 ## Where in code
@@ -55,4 +55,4 @@ Code flows one way: `tokens.json` and `registry/components/*` feed `scripts/buil
 
 ## In a fork
 
-Keep the layout. Replace the contents of `tokens/tokens.json` and `registry/components/`. The CLI, tests and generators work on whatever is there.
+Keep the layout. Replace the contents of `tokens/tokens.json` and `registry/components/`. The CLI, tests, and generators work on whatever is there.

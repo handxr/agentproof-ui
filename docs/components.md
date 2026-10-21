@@ -22,7 +22,7 @@ Rules for `<name>.tsx`:
 
 - Style with `stylex.create` and tokens from `../tokens.stylex` only.
 - Put a JSDoc comment on each prop. It becomes the prop description in `paper docs`.
-- Import only `react`, `@stylexjs/stylex` and the token file. The build lists every other bare import as a dependency that `paper add` reports.
+- Import only `react`, `@stylexjs/stylex`, and the token file. The build lists every other bare import as a dependency that `paper add` reports.
 
 Tests assert what a user can observe: roles, labels and attributes, not class names. See [`button.test.tsx`](../registry/components/button/button.test.tsx).
 

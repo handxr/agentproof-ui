@@ -18,13 +18,13 @@ The registry is a source string in `paper.json` or `--registry`:
 - An `http(s)://` URL to a `registry.json`.
 - A local path to a repo or to a `registry.json`. `apps/example` uses `../..`.
 
-The default is `github:handxr/agentproof-ui`. A fork changes nothing in the CLI: point it at the fork.
+The default is `github:handxr/agentproof-ui`. To use a fork, point the CLI at it. The CLI code does not change.
 
 ```sh
 paper init --registry github:you/agentproof-ui
 ```
 
-The CLI itself is not meant to be a project dependency. Run it with `npx`, and pin it as a `devDependency` only where `paper check` runs in CI. The CLI is not on npm yet; today it runs from a clone (`node packages/cli/dist/paper.js`).
+The CLI itself is not meant to be a project dependency. Run it with `npx`, and pin it as a `devDependency` only where `paper check` runs in CI. The CLI is not on npm yet. Today it runs from a clone with `node packages/cli/dist/paper.js`.
 
 ## Alternatives rejected
 

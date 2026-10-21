@@ -36,7 +36,7 @@ Props are not written by hand. [`extract-props.ts`](../packages/core/extract-pro
 ## Alternatives rejected
 
 - **Markdown or MDX.** Nothing ties it to the component's types. A renamed prop leaves the page wrong and the build green.
-- **Storybook stories as docs.** Good for humans, but an agent needs use/avoid rules and practices, which stories do not have.
+- **Storybook stories as docs.** Good for humans, but an agent needs `use`, `avoid`, and practices, which stories do not have.
 - **Prop tables written by hand.** They duplicate the types and go stale.
 
 ## Where in code

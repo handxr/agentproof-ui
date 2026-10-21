@@ -1,6 +1,6 @@
 # Design
 
-Data shapes first. Everything else is a function over these.
+The data shapes the code is built on. Read them before changing the CLI or the generators.
 
 ## Token tree (`tokens/tokens.json`)
 
@@ -11,20 +11,20 @@ type Tokens = {
 };
 ```
 
-Single source. `tokens/build.ts` maps it to two outputs, both generated:
+This file is the only source of token values. `tokens/build.ts` generates two outputs from it:
 
-- `registry/components/tokens.stylex.ts`: one `stylex.defineVars` per group (primary output). Dark mode is a
-  `@media (prefers-color-scheme: dark)` value on each color var, as on juanhander.com.
+- `registry/components/tokens.stylex.ts`: one `stylex.defineVars` per group. Components import from this file. Dark mode is a
+  `@media (prefers-color-scheme: dark)` value on each color variable, as on juanhander.com.
 - `tokens/tokens.css`: `--paper-<group>-<key>` CSS variables for non-StyleX consumers.
 
-## DocSpec&lt;C&gt; (`<name>.docs.ts` via `defineDoc`)
+## Doc (`<name>.docs.ts`, through `defineDoc`)
 
 ```ts
 type Practice = ({ do: string } | { dont: string }) & { rule?: RuleId };
 type Doc<C> = {
   summary: string; use: string[]; avoid: string[]; practices: Practice[];
-  examples: Record<string, () => Promise<{ default: ComponentType }>>; // real dynamic imports: bad path = tsc error
-  propNotes?: Partial<Record<keyof ComponentProps<C>, string>>;        // removing a prop breaks the doc
+  examples: Record<string, () => Promise<{ default: ComponentType }>>; // dynamic imports, so a wrong path fails tsc
+  propNotes?: Partial<Record<keyof ComponentProps<C>, string>>;        // removing a prop fails tsc
 };
 ```
 
@@ -37,8 +37,8 @@ type Rule = { description: string; check(file: string, source: string): Omit<Vio
 const rules = { "no-raw-color": noRawColor } satisfies Record<string, Rule>;
 ```
 
-A table, not branching: `paper check` iterates it. Adding a rule is one entry.
-`one-primary` is skipped: it needs JSX analysis across a "view", which has no reliable file-level definition.
+`paper check` runs every rule in the table. To add a rule, add one entry.
+There is no `one-primary` rule. It would need JSX analysis across a "view", and a view has no reliable file-level definition.
 
 ## Registry (`registry/registry.json`, generated)
 
@@ -54,8 +54,8 @@ type RegistryEntry = {
 type Registry = { version: string; tokens: RegistryFile[]; components: RegistryEntry[] };
 ```
 
-File contents are embedded so a remote registry is one fetch (`github:user/repo` → raw `registry/registry.json`).
-`llms.txt` and `llms-full.txt` are rendered from the same Registry.
+The registry embeds file contents, so the CLI reads a remote registry in one fetch. For `github:user/repo`, it fetches the raw `registry/registry.json`.
+`scripts/build-registry.ts` renders `llms.txt` and `llms-full.txt` from the same `Registry`.
 
 ## PaperConfig (`paper.json` in the consumer project)
 
@@ -63,7 +63,7 @@ File contents are embedded so a remote registry is one fetch (`github:user/repo`
 type PaperConfig = { registry: string; componentsDir: string; installed: string[] };
 ```
 
-## CheckViolation
+## Violation
 
 ```ts
 type Violation = { rule: RuleId; file: string; line: number; message: string };
@@ -71,15 +71,15 @@ type Violation = { rule: RuleId; file: string; line: number; message: string };
 
 ## Boundaries
 
-`registry.json`, `paper.json` and CLI args are parsed with zod in `packages/cli/src/schema.ts`. Code past that trusts types.
+The CLI parses `registry.json` and `paper.json` with zod in `packages/cli/src/schema.ts`. Code past that point trusts the types.
 
 ## Idempotency
 
-- `init`: writes `paper.json` only if absent (keeps `installed`), overwrites token files with registry content,
-  rewrites the `<!-- paper:start -->…<!-- paper:end -->` block in place (appends if missing).
-- `add`: overwrites component files with registry content, `installed` is a sorted set, block re-rendered.
+- `init` writes `paper.json` only if it is missing, so `installed` survives. It overwrites the token files with the registry content.
+  It rewrites the block between `<!-- paper:start -->` and `<!-- paper:end -->` in place, or appends the block if it is missing.
+- `add` overwrites the component files with the registry content, keeps `installed` sorted and without duplicates, and rewrites the block.
 Running either twice gives byte-identical files.
 
 ## Agent file
 
-`CLAUDE.md` if it exists and `AGENTS.md` does not; otherwise `AGENTS.md`.
+The CLI writes to `CLAUDE.md` if it exists and `AGENTS.md` does not. Otherwise it writes to `AGENTS.md`.

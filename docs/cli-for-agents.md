@@ -21,14 +21,14 @@ Every command follows the same contract, so an agent never has to guess:
 
 - **Non-interactive.** No prompts. Everything is a flag: `--registry`, `--dir`, `--json`.
 - **`--json` on every command.** Output is one JSON document on stdout. Errors in JSON mode are `{"error": "..."}` on stdout.
-- **Exit codes.** `0` success, `1` failure (unknown component, missing `paper.json`, violations in `check`), `2` usage error (unknown command or flag, missing argument).
-- **Validated input.** `registry.json` and `paper.json` are parsed with zod at the boundary. A broken registry fails with a message, not a stack trace.
+- **Exit codes.** `0` means success. `1` means failure, such as an unknown component, a missing `paper.json`, or violations in `check`. `2` means a usage error, such as an unknown command or flag, or a missing argument.
+- **Validated input.** The CLI parses `registry.json` and `paper.json` with zod at its boundary. A broken registry fails with a message, not a stack trace.
 
 Commands are a table in [`index.ts`](../packages/cli/src/index.ts). Each command returns `{ json, text, exitCode? }`, and `main` decides how to print. No command writes to stdout itself.
 
 ## Alternatives rejected
 
-- **Skills or rules files only.** Text that someone copies once and that ages. A skill can say "no raw colors". `paper check` exits 1 when there is one.
+- **Skills or rules files only.** Someone copies the text once, and it goes stale. A skill can say "no raw colors". `paper check` exits 1 when there is one.
 - **An MCP server.** Needs setup per agent and per editor. Every coding agent can already run a shell command.
 - **Interactive prompts (shadcn-style `init`).** An agent cannot answer a prompt reliably. Flags with defaults work for both people and agents.
 
@@ -42,4 +42,4 @@ Commands are a table in [`index.ts`](../packages/cli/src/index.ts). Each command
 
 ## In a fork
 
-Rename the bin in [`packages/cli/package.json`](../packages/cli/package.json) if you want your own command name. To add a command, write a `Command` in `commands/`, add it to the table, and test it through the binary in `tests/cli.test.ts`. Keep the contract: no prompts, `--json`, exit codes 0/1/2.
+Rename the bin in [`packages/cli/package.json`](../packages/cli/package.json) if you want your own command name. To add a command, write a `Command` in `commands/`, add it to the table, and test it through the binary in `tests/cli.test.ts`. Keep the contract: no prompts, `--json`, and exit codes 0, 1, and 2.
