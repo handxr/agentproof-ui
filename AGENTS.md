@@ -1,6 +1,6 @@
 # AGENTS.md
 
-Reference architecture for design systems that agents can use. The example system is `paper`, built with React and StyleX. The CLI is also `paper`. Read `DESIGN.md` for the data shapes and `docs/` for the decisions.
+Reference architecture for design systems that agents can use. The example system is `paper`, built with React and StyleX. The CLI is also `paper`. Read `ARCHITECTURE.md` for the data shapes and `docs/` for the decisions.
 
 ## Commands
 

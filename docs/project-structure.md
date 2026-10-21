@@ -35,7 +35,7 @@ agentproof-ui/
   tests/                 # registry and CLI tests
   docs/                  # these guides
   llms.txt*  llms-full.txt*
-  AGENTS.md  DESIGN.md
+  AGENTS.md  ARCHITECTURE.md
 ```
 
 `*` marks generated files. See [Generated files](generated-files.md).
@@ -50,7 +50,7 @@ Code flows one way: `tokens.json` and `registry/components/*` feed `scripts/buil
 ## Where in code
 
 - Workspace: [`pnpm-workspace.yaml`](../pnpm-workspace.yaml)
-- Data shapes: [`DESIGN.md`](../DESIGN.md)
+- Data shapes: [`ARCHITECTURE.md`](../ARCHITECTURE.md)
 - Scripts: [`package.json`](../package.json)
 
 ## In a fork

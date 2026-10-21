@@ -1,4 +1,4 @@
-# Design
+# Architecture
 
 The data shapes the code is built on. Read them before changing the CLI or the generators.
 

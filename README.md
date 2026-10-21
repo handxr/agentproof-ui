@@ -65,7 +65,7 @@ Early. The CLI is not on npm yet, so `npx paper` does not work. Run it from a cl
 
 ## Contributing
 
-Read [AGENTS.md](AGENTS.md) and [DESIGN.md](DESIGN.md). `pnpm check` must pass before every commit.
+Read [AGENTS.md](AGENTS.md) and [ARCHITECTURE.md](ARCHITECTURE.md). `pnpm check` must pass before every commit.
 
 ## License
 
