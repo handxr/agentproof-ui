@@ -2,7 +2,7 @@
 
 A reference architecture for design systems that AI agents can use correctly.
 
-Agents write UI fast and drift from the design system faster: raw hex colors, props that no longer exist, a component rebuilt by hand next to the real one. This repo shows one way to stop that, with working code you can read and fork. It follows the format of [bulletproof-react](https://github.com/alan2207/bulletproof-react): a set of decisions, each explained, and an example that implements them.
+Agents write UI fast and drift from the design system faster: raw hex colors, props that no longer exist, a component rebuilt by hand next to the real one. This repo shows one way to stop that, with working code you can read and fork. It is a set of decisions, each explained, and an example that implements them.
 
 It is for teams that own a design system and want agents to use it, and for anyone building a CLI that agents call.
 
