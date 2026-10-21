@@ -62,6 +62,7 @@ To build your own system on it, read [Forking](docs/forking.md).
 | [AGENTS.md block](docs/agents-md.md) | A managed, idempotent block written by `paper init` |
 | [Generated files](docs/generated-files.md) | `registry.json`, `llms.txt`, staleness check |
 | [Distribution](docs/distribution.md) | Copy code into the project, and point at a fork with `--registry` |
+| [Updates](docs/updates.md) | File hashes in `paper.json`, so `paper update` never overwrites local changes |
 | [Forking](docs/forking.md) | What to change and what to keep |
 
 For LLMs: [`llms.txt`](llms.txt) is the index and [`llms-full.txt`](llms-full.txt) has every component's docs and examples.

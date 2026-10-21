@@ -60,8 +60,12 @@ The registry embeds file contents, so the CLI reads a remote registry in one fet
 ## PaperConfig (`paper.json` in the consumer project)
 
 ```ts
-type PaperConfig = { registry: string; componentsDir: string; installed: string[] };
+// Written.files: project-relative path -> sha256 of the content the CLI wrote there.
+type Written = { files: Record<string, string> };
+type PaperConfig = { registry: string; componentsDir: string; installed: Record<string, Written>; tokens: Written };
 ```
+
+`schema.ts` also reads the old form, `installed: string[]`, as components with no recorded files. The CLI writes only the new form. See [Updates](docs/updates.md).
 
 ## Violation
 
@@ -75,9 +79,10 @@ The CLI parses `registry.json` and `paper.json` with zod in `packages/cli/src/sc
 
 ## Idempotency
 
-- `init` writes `paper.json` only if it is missing, so `installed` survives. It overwrites the token files with the registry content.
+- `init` keeps `installed` from an existing `paper.json`. It writes the token files, and fails on a locally modified one unless `--force`.
   It rewrites the block between `<!-- paper:start -->` and `<!-- paper:end -->` in place, or appends the block if it is missing.
-- `add` overwrites the component files with the registry content, keeps `installed` sorted and without duplicates, and rewrites the block.
+- `add` writes the component files, fails on locally modified ones unless `--force`, keeps `installed` sorted, and rewrites the block.
+- `update` replaces files that still match their recorded hash and skips the rest. See [Updates](docs/updates.md).
 Running either twice gives byte-identical files.
 
 ## Agent file

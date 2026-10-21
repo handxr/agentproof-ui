@@ -11,15 +11,16 @@ The `paper` CLI is the interface. Agent instructions only point at it. See [AGEN
 | Command | Does |
 | --- | --- |
 | `paper init [--dir <dir>]` | Writes `paper.json`, the token files and the AGENTS.md block |
-| `paper add <name...>` | Copies components into the project |
+| `paper add <name...>` | Copies components into the project. Fails on locally modified files unless `--force` |
+| `paper update [name...]` | Updates installed components and tokens, skips local changes. See [Updates](updates.md) |
 | `paper list` | Lists components, marks installed ones |
 | `paper docs <name>` | Summary, use, avoid, practices, props, examples |
 | `paper tokens` | Token values |
-| `paper check` | Lints the project against the rules |
+| `paper check` | Lints the project against the rules and checks that the AGENTS.md block is current |
 
 Every command follows the same contract, so an agent never has to guess:
 
-- **Non-interactive.** No prompts. Everything is a flag: `--registry`, `--dir`, `--json`.
+- **Non-interactive.** No prompts. Everything is a flag: `--registry`, `--dir`, `--force`, `--json`.
 - **`--json` on every command.** Output is one JSON document on stdout. Errors in JSON mode are `{"error": "..."}` on stdout.
 - **Exit codes.** `0` means success. `1` means failure, such as an unknown component, a missing `paper.json`, or violations in `check`. `2` means a usage error, such as an unknown command or flag, or a missing argument.
 - **Validated input.** The CLI parses `registry.json` and `paper.json` with zod at its boundary. A broken registry fails with a message, not a stack trace.

@@ -10,7 +10,7 @@ A component installed from `node_modules` is a black box. Agents can read only t
 
 1. `paper init` writes `paper.json` and copies `tokens.stylex.ts` and `tokens.css` into `componentsDir` (default `src/components/paper`).
 2. `paper add button` copies `button/button.tsx` and prints the npm dependencies it needs.
-3. Running `add` again overwrites the copy with the registry version. That is how you update.
+3. `paper update` brings copies up to date with the registry and skips files changed locally. See [Updates](updates.md).
 
 The registry is a source string in `paper.json` or `--registry`:
 
@@ -34,6 +34,7 @@ The CLI itself is not meant to be a project dependency. Run it with `npx`, and p
 ## Where in code
 
 - Registry sources: [`packages/cli/src/registry.ts`](../packages/cli/src/registry.ts)
+- Updates: [Updates](updates.md)
 - Copy and config: [`packages/cli/src/project.ts`](../packages/cli/src/project.ts), [`commands/add.ts`](../packages/cli/src/commands/add.ts), [`commands/init.ts`](../packages/cli/src/commands/init.ts)
 - Consumer: [`apps/example/paper.json`](../apps/example/paper.json)
 

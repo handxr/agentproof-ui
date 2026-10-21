@@ -42,5 +42,6 @@ Add `registry/rules/<id>.ts` exporting a `Rule`, register it in the `rules` tabl
 - No new token without a real use in a component.
 - The CLI never prompts. Every command works with flags only and takes `--json`. Exit codes are 0 for success, 1 for failure, and 2 for a usage error.
 - The CLI parses `registry.json` and `paper.json` with zod at its boundary, in `packages/cli/src/schema.ts`. Trust the types after that.
-- `init` and `add` must stay idempotent: running them twice leaves identical files.
+- `init`, `add`, and `update` must stay idempotent: running them twice leaves identical files.
+- The CLI never overwrites a file whose hash differs from the one recorded in `paper.json` without `--force`.
 - Use conventional commits.

@@ -25,7 +25,8 @@ See the full block in [`apps/example/AGENTS.md`](../apps/example/AGENTS.md).
 The block is short on purpose. It points at commands and lists facts. Component guidance stays in the CLI.
 
 - **Managed.** Only the text between the markers belongs to `paper`. If the file exists, `init` replaces the block in place or appends it. Everything outside is untouched.
-- **Idempotent.** Running `init` or `add` twice gives byte-identical files. `add` re-renders the block with the new installed list.
+- **Idempotent.** Running `init` or `add` twice gives byte-identical files. `add` and `update` re-render the block with the new installed list.
+- **Checked.** `paper check` exits 1 when the block differs from what the current registry and `paper.json` would write, and suggests `paper update`.
 - **Agent file.** The CLI writes to `CLAUDE.md` if it exists and `AGENTS.md` does not. Otherwise it writes to `AGENTS.md`.
 
 The block includes setup gotchas found while building the example. StyleX needs its bundler plugin, and the entry must import at least one CSS file. Without a CSS import, the build has no stylesheet for StyleX to add its CSS to, and components render unstyled.
