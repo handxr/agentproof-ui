@@ -86,16 +86,16 @@
       ],
       "practices": [
         {
-          "do": "Use one primary button per view; make the rest secondary."
+          "do": "Use one primary button per view. Make the rest secondary."
         },
         {
           "do": "Write the label as a verb that says what happens: 'Send message', not 'OK'."
         },
         {
-          "do": "Set type=\"submit\" explicitly for form submission; the default is type=\"button\"."
+          "do": "Set type=\"submit\" explicitly for form submission. The default is type=\"button\"."
         },
         {
-          "dont": "Restyle it with raw colors; extend the variants with color tokens.",
+          "dont": "Restyle it with raw colors. Extend the variants with color tokens.",
           "rule": "no-raw-color"
         }
       ],
@@ -140,10 +140,10 @@
       ],
       "practices": [
         {
-          "do": "Always pass a visible label; the component requires it."
+          "do": "Pass a visible label. The component requires it."
         },
         {
-          "dont": "Use the placeholder as the label or to hold instructions; use hint."
+          "dont": "Use the placeholder as the label or to hold instructions. Use hint."
         },
         {
           "do": "Set type and autoComplete so browsers and password managers can help."
@@ -152,7 +152,7 @@
           "do": "Write errors that say how to fix the value, not just that it is wrong."
         },
         {
-          "dont": "Color the field with raw values to show errors; pass error.",
+          "dont": "Color the field with raw values to show errors. Pass error.",
           "rule": "no-raw-color"
         }
       ],

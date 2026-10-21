@@ -14,8 +14,8 @@ export default defineDoc<typeof Button>({
   use: ["Submitting a form"],
   avoid: ["Navigating to another page: use a link"],
   practices: [
-    { do: "Use one primary button per view; make the rest secondary." },
-    { dont: "Restyle it with raw colors; extend the variants with color tokens.", rule: "no-raw-color" },
+    { do: "Use one primary button per view. Make the rest secondary." },
+    { dont: "Restyle it with raw colors. Extend the variants with color tokens.", rule: "no-raw-color" },
   ],
   examples: { primary: () => import("./examples/primary") },
   propNotes: { disabled: "Prefer explaining why an action is unavailable over a silent disabled button." },

@@ -15,10 +15,10 @@ Avoid for:
 - Decoration or labels with no action
 
 Practices:
-- Do: Use one primary button per view; make the rest secondary.
+- Do: Use one primary button per view. Make the rest secondary.
 - Do: Write the label as a verb that says what happens: 'Send message', not 'OK'.
-- Do: Set type="submit" explicitly for form submission; the default is type="button".
-- Don't: Restyle it with raw colors; extend the variants with color tokens. (paper check: no-raw-color)
+- Do: Set type="submit" explicitly for form submission. The default is type="button".
+- Don't: Restyle it with raw colors. Extend the variants with color tokens. (paper check: no-raw-color)
 
 Props:
 - `variant?: "primary" | "secondary"` = primary. `primary` for the main action of a view, `secondary` for everything else.
@@ -60,11 +60,11 @@ Avoid for:
 - Choosing from a fixed list: use a select or radios
 
 Practices:
-- Do: Always pass a visible label; the component requires it.
-- Don't: Use the placeholder as the label or to hold instructions; use hint.
+- Do: Pass a visible label. The component requires it.
+- Don't: Use the placeholder as the label or to hold instructions. Use hint.
 - Do: Set type and autoComplete so browsers and password managers can help.
 - Do: Write errors that say how to fix the value, not just that it is wrong.
-- Don't: Color the field with raw values to show errors; pass error. (paper check: no-raw-color)
+- Don't: Color the field with raw values to show errors. Pass error. (paper check: no-raw-color)
 
 Props:
 - `error?: string`. Error message. Marks the field invalid and replaces the hint. Sets aria-invalid and links the message with aria-describedby.
