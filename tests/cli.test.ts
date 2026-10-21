@@ -154,6 +154,25 @@ test("update rewrites files paper wrote, skips local changes and exits 1 unless 
   expect(JSON.parse(paper(dir, "update", "--json").out)).toMatchObject({ updated: [], skipped: [] });
 });
 
+test("update skips a component missing from the registry, updates the rest and exits 1 even with --force", () => {
+  const dir = installed("button");
+  const config = JSON.parse(read(dir, "paper.json"));
+  config.installed.card = { files: {} };
+  writeFileSync(join(dir, BUTTON), "// old button\n");
+  config.installed.button.files[BUTTON] = createHash("sha256").update("// old button\n").digest("hex");
+  writeFileSync(join(dir, "paper.json"), JSON.stringify(config));
+
+  const r = paper(dir, "update", "--json");
+  expect(r.code).toBe(1);
+  expect(JSON.parse(r.out)).toMatchObject({ updated: [BUTTON], skipped: [], missing: ["card"] });
+  expect(read(dir, BUTTON)).toBe(read(repo, "registry/components/button/button.tsx"));
+  expect(JSON.parse(read(dir, "paper.json")).installed.card).toBeDefined();
+
+  const forced = paper(dir, "update", "--force");
+  expect(forced.code).toBe(1);
+  expect(forced.out).toContain("skipped (missing from the registry): card");
+});
+
 test("update reads an old paper.json with installed as a list and writes the record form", () => {
   const dir = installed("button");
   writeFileSync(join(dir, "paper.json"), JSON.stringify({ registry: repo, componentsDir: "src/components/paper", installed: ["button"] }));

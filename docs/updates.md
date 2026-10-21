@@ -28,7 +28,9 @@ Before writing a file, the CLI compares three things: the file on disk, its reco
 
 `--force` overwrites `modified` files in every command.
 
-`paper update [name...]` updates the named components, or every installed component and the token files when you name none. It prints `updated`, `unchanged` and `skipped`, with `--json` for agents. It exits 1 when it skipped a file, so an agent cannot read a partial update as success. It also rewrites the AGENTS.md block.
+`paper update [name...]` updates the named components, or every installed component and the token files when you name none. It prints `updated`, `unchanged`, `skipped` and `missing`, with `--json` for agents. It exits 1 when it skipped a file, so an agent cannot read a partial update as success. It also rewrites the AGENTS.md block.
+
+An installed component that the registry no longer has is reported under `missing` and left on disk, and the rest still update. `update` exits 1 in that case, with or without `--force`, because there is nothing to update it to. Delete its files and its `paper.json` entry, or point `--registry` at a registry that has it.
 
 `paper check` compares the AGENTS.md block with the block that the current registry and `paper.json` would produce. If they differ, it reports `agentBlock: "stale"` and exits 1. A project that never reruns the CLI still finds out when the block text changes upstream.
 

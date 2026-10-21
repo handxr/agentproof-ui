@@ -9,12 +9,13 @@ export const update: Command = async ({ cwd, args, flags }) => {
   const names = args.length ? args : Object.keys(config.installed).sort();
   for (const name of names) {
     if (!config.installed[name]) throw new Error(`"${name}" is not installed; use \`paper add ${name}\``);
-    if (!registry.components.some((c) => c.name === name)) throw new Error(`"${name}" is no longer in the registry; delete its files and its entry in paper.json, or pass --registry with one that has it`);
   }
+  // A component removed upstream is left as is: there is nothing to update it to, and --force cannot change that.
+  const missing = names.filter((name) => !registry.components.some((c) => c.name === name));
   const skip = (f: PlannedFile) => f.status === "modified" && !flags.force;
   const all: PlannedFile[] = [];
   const installed = { ...config.installed };
-  for (const name of names) {
+  for (const name of names.filter((n) => !missing.includes(n))) {
     const entry = registry.components.find((c) => c.name === name)!;
     const plan = planFiles(cwd, config, installed[name], entry.files);
     installed[name] = applyPlan(cwd, installed[name], plan, skip);
@@ -38,7 +39,8 @@ export const update: Command = async ({ cwd, args, flags }) => {
     `updated: ${updated.join(", ") || "none"}`,
     `unchanged: ${unchanged.length} file(s)`,
     skipped.length ? `skipped (locally modified): ${skipped.join(", ")}\nreview them, then rerun with --force to overwrite` : "",
+    missing.length ? `skipped (missing from the registry): ${missing.join(", ")}\ndelete their files and paper.json entries, or pass --registry with one that has them` : "",
     `rewrote the paper block in ${agentFile}`,
   ].filter(Boolean);
-  return { exitCode: skipped.length ? 1 : 0, json: { updated, unchanged, skipped, agentFile }, text: text.join("\n") };
+  return { exitCode: skipped.length || missing.length ? 1 : 0, json: { updated, unchanged, skipped, missing, agentFile }, text: text.join("\n") };
 };
