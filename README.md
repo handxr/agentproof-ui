@@ -1,32 +1,71 @@
 # agentproof-ui
 
-A minimalist, agent-first React design system. Black on white, Geist, lots of air, a 35rem column (the style of [juanhander.com](https://www.juanhander.com/)). Styled with [StyleX](https://stylexjs.com).
+A reference architecture for design systems that AI agents can use correctly.
 
-Like shadcn, the CLI copies component code into your project. You own the copy; agents read real code, not a black box in `node_modules`.
+Agents write UI fast and drift from the design system faster: raw hex colors, props that no longer exist, a component rebuilt by hand next to the real one. This repo shows one way to stop that, with working code you can read and fork. It follows the format of [bulletproof-react](https://github.com/alan2207/bulletproof-react): a set of decisions, each explained, and an example that implements them.
 
-## Use it
+It is for teams that own a design system and want agents to use it, and for anyone building a CLI that agents call.
+
+## The idea
+
+- Each component has typed docs (`button.docs.ts`). The compiler fails if they mention a prop or an example that does not exist.
+- A non-interactive CLI, `paper`, serves the docs, copies components into projects, and checks projects against the rules. Every command has `--json` and exit codes.
+- Rules that code can check are checks (`paper check`), not prose.
+- `paper init` writes a short, managed block into the project's `AGENTS.md` that tells agents to use the CLI.
+- `registry.json`, `llms.txt` and the token files are generated, and `pnpm check` fails when they are stale.
+
+The example design system is `paper`: black on white, Geist, a 35rem column, styled with [StyleX](https://stylexjs.com). It has two components, `Button` and `Input`.
+
+![apps/example](docs/example.png)
+
+## Quick start
+
+Requires Node 22 and pnpm.
 
 ```sh
-npx paper init                 # paper.json, src/components/paper/tokens.stylex.ts, AGENTS.md section
-npx paper add button input     # copy components
-npx paper docs button          # summary, when to use, practices, props, examples (--json for agents)
-npx paper check                # fails on raw colors outside tokens
+git clone https://github.com/handxr/agentproof-ui && cd agentproof-ui
+pnpm install
+pnpm check                      # types, lint, tests, generated files
+pnpm --filter example build     # the demo app in apps/example
+pnpm --filter example dev
 ```
 
-You need `@stylexjs/stylex` and a StyleX bundler plugin (for Vite: `@stylexjs/unplugin`).
+Try the CLI from the example app:
 
-## Fork it
+```sh
+cd apps/example
+pnpm paper list
+pnpm paper docs button
+pnpm paper docs button --json
+pnpm paper check
+```
 
-Everything lives in this repo. Point the CLI at your fork: `npx paper init --registry github:you/agentproof-ui`
-(or a local path / URL to a `registry.json`). Edit `tokens/tokens.json` and the components, run `pnpm generate`.
+To build your own system on it, read [Forking](docs/forking.md).
 
-## For LLMs
+## Docs
 
-[`llms.txt`](llms.txt) is the index; [`llms-full.txt`](llms-full.txt) has every component's docs and examples.
+| Guide | Decision |
+| --- | --- |
+| [Project structure](docs/project-structure.md) | One workspace for tokens, components, CLI and generators |
+| [Tokens](docs/tokens.md) | `tokens.json` as the only source, StyleX vars and CSS variables generated |
+| [Components](docs/components.md) | One folder shape per component, enforced by a test |
+| [Component docs](docs/component-docs.md) | Typed `docs.ts` instead of markdown, props from types |
+| [A CLI for agents](docs/cli-for-agents.md) | CLI over skills; non-interactive, `--json`, exit codes |
+| [Guardrails](docs/guardrails.md) | Rules as checks in `paper check` |
+| [AGENTS.md block](docs/agents-md.md) | A managed, idempotent block written by `paper init` |
+| [Generated files](docs/generated-files.md) | `registry.json`, `llms.txt`, staleness check |
+| [Distribution](docs/distribution.md) | Copy code into the project; point a fork with `--registry` |
+| [Forking](docs/forking.md) | What to change and what to keep |
 
-## Develop
+For LLMs: [`llms.txt`](llms.txt) is the index and [`llms-full.txt`](llms-full.txt) has every component's docs and examples.
 
-Node 22, pnpm. `pnpm install && pnpm check`. See [AGENTS.md](AGENTS.md) and [DESIGN.md](DESIGN.md).
+## Status
+
+Early. The CLI is not on npm yet, so `npx paper` does not work. Run it from a clone with `node packages/cli/dist/paper.js` after `pnpm build:cli`, or through `pnpm paper` in `apps/example`. There is no docs website.
+
+## Contributing
+
+Read [AGENTS.md](AGENTS.md) and [DESIGN.md](DESIGN.md). `pnpm check` must pass before every commit.
 
 ## License
 

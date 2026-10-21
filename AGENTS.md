@@ -1,12 +1,20 @@
 # AGENTS.md
 
-Agent-first React design system styled with StyleX. Read `DESIGN.md` for the data shapes.
+Reference architecture for design systems that agents can use. The example system is `paper` (React + StyleX); the CLI is `paper`. Read `DESIGN.md` for the data shapes and `docs/` for the decisions.
 
 ## Commands
 
 - `pnpm check`: typecheck + lint + test + generated files up to date. Must pass before every commit.
 - `pnpm generate`: rebuild `tokens.stylex.ts`, `tokens.css`, `registry.json`, `llms.txt`, `llms-full.txt`.
 - `pnpm build:cli`: bundle the CLI to `packages/cli/dist/paper.js`.
+
+## Example app
+
+`apps/example` consumes paper through the real CLI. After changing tokens or components: `pnpm --filter example sync && pnpm --filter example build`. Its `AGENTS.md`, `paper.json` and `src/components/paper/` are written by the CLI; do not edit them by hand.
+
+## Docs
+
+`docs/*.md` are one guide per decision. Keep them in sync with the code they link to.
 
 ## Generated files (never edit by hand)
 
