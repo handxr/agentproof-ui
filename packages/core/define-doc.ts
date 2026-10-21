@@ -1,9 +1,7 @@
 import type { ComponentProps, ComponentType, JSXElementConstructor } from "react";
 import type { RuleId } from "../../registry/rules/index.ts";
 
-
 export type Practice = ({ do: string; dont?: never } | { dont: string; do?: never }) & { rule?: RuleId };
-
 
 export type ExampleLoader = () => Promise<{ default: ComponentType }>;
 
