@@ -1,0 +1,8 @@
+{
+  "registry": "../..",
+  "componentsDir": "src/components/paper",
+  "installed": [
+    "button",
+    "input"
+  ]
+}

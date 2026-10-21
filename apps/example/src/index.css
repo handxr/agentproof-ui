@@ -1,0 +1,2 @@
+/* Required: the StyleX plugin adds its CSS to this stylesheet. Without a CSS import, components render unstyled. */
+body { margin: 0; }

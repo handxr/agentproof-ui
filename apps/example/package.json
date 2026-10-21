@@ -1,0 +1,26 @@
+{
+  "name": "example",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "paper": "node ../../packages/cli/dist/paper.js",
+    "sync": "pnpm --filter @paper/cli build && pnpm paper init --registry ../.. && pnpm paper add button input",
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "check:paper": "pnpm paper check"
+  },
+  "dependencies": {
+    "@fontsource/geist": "^5.3.0",
+    "@stylexjs/stylex": "^0.19.1",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1"
+  },
+  "devDependencies": {
+    "@stylexjs/unplugin": "^0.19.1",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.2",
+    "typescript": "^5.9.3",
+    "vite": "^8.3.5"
+  }
+}
