@@ -24,7 +24,7 @@ The default is `github:handxr/agentproof-ui`. To use a fork, point the CLI at it
 paper init --registry github:you/agentproof-ui
 ```
 
-The CLI itself is not meant to be a project dependency. Run it with `npx`, and pin it as a `devDependency` only where `paper check` runs in CI. The CLI is not on npm yet. Today it runs from a clone with `node packages/cli/dist/paper.js`.
+This repo does not publish the CLI. A fork publishes its own, under its own name. Consumers then run it with `npx` and pin it as a `devDependency` only where `paper check` runs in CI. Here it runs from a clone with `node packages/cli/dist/paper.js`.
 
 ## Alternatives rejected
 

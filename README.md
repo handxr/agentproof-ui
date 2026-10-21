@@ -69,7 +69,7 @@ For LLMs: [`llms.txt`](llms.txt) is the index and [`llms-full.txt`](llms-full.tx
 
 ## Status
 
-Early. The CLI is not on npm yet, so `npx paper` does not work. Run it from a clone with `node packages/cli/dist/paper.js` after `pnpm build:cli`, or through `pnpm paper` in `apps/example`. There is no docs website.
+This repo is a reference, not a package, and it will not be published to npm. `paper` is an example of a design system CLI for agents: read it, then copy or fork it and publish your own under your name. To run it here, use `pnpm paper` in `apps/example`, or `node packages/cli/dist/paper.js` after `pnpm build:cli`. There is no docs website.
 
 ## Contributing
 
