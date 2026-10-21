@@ -14,7 +14,7 @@ export function extractProps(file: string, tsconfig: string): PropInfo[] {
   return Object.values(doc.props)
     .map((p) => ({
       name: p.name,
-      type: p.type.name,
+      type: (p.type.raw ?? p.type.name).replace(/ \| undefined$/, ""),
       required: p.required,
       ...(p.defaultValue?.value !== undefined ? { default: String(p.defaultValue.value) } : {}),
       description: p.description,

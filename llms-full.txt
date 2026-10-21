@@ -1,0 +1,92 @@
+# design-system
+
+> Agent-first, minimalist React design system styled with StyleX. v0.1.0. Components are copied into your project with the CLI: `npx ds add <name>`.
+
+## button
+
+Triggers an action in place: submit a form, open a dialog, save.
+
+Use for:
+- Submitting a form
+- Confirming or cancelling an action
+
+Avoid for:
+- Navigating to another page: use a link
+- Decoration or labels with no action
+
+Practices:
+- Do: Use one primary button per view; make the rest secondary.
+- Do: Write the label as a verb that says what happens: 'Send message', not 'OK'.
+- Do: Set type="submit" explicitly for form submission; the default is type="button".
+- Don't: Restyle it with raw colors; extend the variants with color tokens. (ds check: no-raw-color)
+
+Props:
+- `variant?: "primary" | "secondary"` = primary. `primary` for the main action of a view, `secondary` for everything else.
+
+Example `primary`:
+
+```tsx
+import { Button } from "../button";
+
+export default function Primary() {
+  return <Button type="submit">Send message</Button>;
+}
+```
+
+Example `secondary`:
+
+```tsx
+import { Button } from "../button";
+
+export default function Secondary() {
+  return (
+    <div style={{ display: "flex", gap: "1rem" }}>
+      <Button type="submit">Save</Button>
+      <Button variant="secondary">Cancel</Button>
+    </div>
+  );
+}
+```
+
+## input
+
+Single-line text field with a visible label, optional hint and error.
+
+Use for:
+- Short free text: name, email, search
+
+Avoid for:
+- Multi-line text: use a textarea
+- Choosing from a fixed list: use a select or radios
+
+Practices:
+- Do: Always pass a visible label; the component requires it.
+- Don't: Use the placeholder as the label or to hold instructions; use hint.
+- Do: Set type and autoComplete so browsers and password managers can help.
+- Do: Write errors that say how to fix the value, not just that it is wrong.
+- Don't: Color the field with raw values to show errors; pass error. (ds check: no-raw-color)
+
+Props:
+- `error?: string`. Error message. Marks the field invalid and replaces the hint. Sets aria-invalid and links the message with aria-describedby.
+- `hint?: string`. Help text under the field.
+- `label: string`. Visible label. Required: placeholders are not labels.
+
+Example `basic`:
+
+```tsx
+import { Input } from "../input";
+
+export default function Basic() {
+  return <Input label="Email" type="email" name="email" autoComplete="email" hint="We only use it to reply." />;
+}
+```
+
+Example `with-error`:
+
+```tsx
+import { Input } from "../input";
+
+export default function WithError() {
+  return <Input label="Email" type="email" name="email" defaultValue="juan@" error="Enter a full email address." />;
+}
+```

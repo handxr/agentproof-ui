@@ -1,0 +1,20 @@
+# design-system
+
+> Agent-first, minimalist React design system styled with StyleX. v0.1.0. Components are copied into your project with the CLI: `npx ds add <name>`.
+
+## Components
+
+- button: Triggers an action in place: submit a form, open a dialog, save. Docs: `npx ds docs button`.
+- input: Single-line text field with a visible label, optional hint and error. Docs: `npx ds docs input`.
+
+## Tokens
+
+- [tokens.json](tokens/tokens.json): color, font, fontSize, fontWeight, lineHeight, space, radius, size. StyleX: `import { color, space } from "./tokens.stylex"`.
+
+## Rules (`npx ds check`)
+
+- no-raw-color: Colors must come from design tokens (color.* in tokens.stylex.ts), not raw hex/rgb/hsl values.
+
+## Full docs
+
+- [llms-full.txt](llms-full.txt)
