@@ -1,4 +1,4 @@
-import { defineDoc } from "@ds/core/define-doc";
+import { defineDoc } from "@paper/core/define-doc";
 import type { Button } from "./button";
 
 export default defineDoc<typeof Button>({

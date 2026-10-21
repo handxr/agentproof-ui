@@ -15,7 +15,7 @@ Single source. `tokens/build.ts` maps it to two outputs, both generated:
 
 - `registry/components/tokens.stylex.ts`: one `stylex.defineVars` per group (primary output). Dark mode is a
   `@media (prefers-color-scheme: dark)` value on each color var, as on juanhander.com.
-- `tokens/tokens.css`: `--ds-<group>-<key>` CSS variables for non-StyleX consumers.
+- `tokens/tokens.css`: `--paper-<group>-<key>` CSS variables for non-StyleX consumers.
 
 ## DocSpec&lt;C&gt; (`<name>.docs.ts` via `defineDoc`)
 
@@ -37,7 +37,7 @@ type Rule = { description: string; check(file: string, source: string): Omit<Vio
 const rules = { "no-raw-color": noRawColor } satisfies Record<string, Rule>;
 ```
 
-A table, not branching: `ds check` iterates it. Adding a rule is one entry.
+A table, not branching: `paper check` iterates it. Adding a rule is one entry.
 `one-primary` is skipped: it needs JSX analysis across a "view", which has no reliable file-level definition.
 
 ## Registry (`registry/registry.json`, generated)
@@ -57,10 +57,10 @@ type Registry = { version: string; tokens: RegistryFile[]; components: RegistryE
 File contents are embedded so a remote registry is one fetch (`github:user/repo` → raw `registry/registry.json`).
 `llms.txt` and `llms-full.txt` are rendered from the same Registry.
 
-## DsConfig (`ds.json` in the consumer project)
+## PaperConfig (`paper.json` in the consumer project)
 
 ```ts
-type DsConfig = { registry: string; componentsDir: string; installed: string[] };
+type PaperConfig = { registry: string; componentsDir: string; installed: string[] };
 ```
 
 ## CheckViolation
@@ -71,12 +71,12 @@ type Violation = { rule: RuleId; file: string; line: number; message: string };
 
 ## Boundaries
 
-`registry.json`, `ds.json` and CLI args are parsed with zod in `packages/cli/src/schema.ts`. Code past that trusts types.
+`registry.json`, `paper.json` and CLI args are parsed with zod in `packages/cli/src/schema.ts`. Code past that trusts types.
 
 ## Idempotency
 
-- `init`: writes `ds.json` only if absent (keeps `installed`), overwrites token files with registry content,
-  rewrites the `<!-- ds:start -->…<!-- ds:end -->` block in place (appends if missing).
+- `init`: writes `paper.json` only if absent (keeps `installed`), overwrites token files with registry content,
+  rewrites the `<!-- paper:start -->…<!-- paper:end -->` block in place (appends if missing).
 - `add`: overwrites component files with registry content, `installed` is a sorted set, block re-rendered.
 Running either twice gives byte-identical files.
 

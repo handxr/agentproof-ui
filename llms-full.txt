@@ -1,6 +1,6 @@
-# design-system
+# paper
 
-> Agent-first, minimalist React design system styled with StyleX. v0.1.0. Components are copied into your project with the CLI: `npx ds add <name>`.
+> Agent-first, minimalist React design system styled with StyleX. v0.1.0. Components are copied into your project with the CLI: `npx paper add <name>`.
 
 ## button
 
@@ -18,7 +18,7 @@ Practices:
 - Do: Use one primary button per view; make the rest secondary.
 - Do: Write the label as a verb that says what happens: 'Send message', not 'OK'.
 - Do: Set type="submit" explicitly for form submission; the default is type="button".
-- Don't: Restyle it with raw colors; extend the variants with color tokens. (ds check: no-raw-color)
+- Don't: Restyle it with raw colors; extend the variants with color tokens. (paper check: no-raw-color)
 
 Props:
 - `variant?: "primary" | "secondary"` = primary. `primary` for the main action of a view, `secondary` for everything else.
@@ -64,7 +64,7 @@ Practices:
 - Don't: Use the placeholder as the label or to hold instructions; use hint.
 - Do: Set type and autoComplete so browsers and password managers can help.
 - Do: Write errors that say how to fix the value, not just that it is wrong.
-- Don't: Color the field with raw values to show errors; pass error. (ds check: no-raw-color)
+- Don't: Color the field with raw values to show errors; pass error. (paper check: no-raw-color)
 
 Props:
 - `error?: string`. Error message. Marks the field invalid and replaces the hint. Sets aria-invalid and links the message with aria-describedby.

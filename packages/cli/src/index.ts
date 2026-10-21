@@ -8,8 +8,8 @@ import { UsageError, type Command, type Flags } from "./command.ts";
 
 const commands: Record<string, Command> = { init, add, list, docs, tokens, check };
 
-const USAGE = `usage: ds <command> [--json] [--registry <path|url|github:user/repo>]
-  init [--dir <componentsDir>]  write ds.json, tokens and the AGENTS.md section
+const USAGE = `usage: paper <command> [--json] [--registry <path|url|github:user/repo>]
+  init [--dir <componentsDir>]  write paper.json, tokens and the AGENTS.md section
   add <name...>                 copy components into your project
   list                          components in the registry
   docs <name>                   summary, use/avoid, practices, props, examples

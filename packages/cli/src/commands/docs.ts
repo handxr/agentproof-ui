@@ -5,7 +5,7 @@ import { UsageError } from "../command.ts";
 
 export const docs: Command = async ({ cwd, args, flags }) => {
   const [name] = args;
-  if (!name) throw new UsageError("usage: ds docs <name>");
+  if (!name) throw new UsageError("usage: paper docs <name>");
   const registry = await loadRegistry(flags.registry ?? readConfig(cwd)?.registry ?? DEFAULT_REGISTRY);
   const entry = registry.components.find((c) => c.name === name);
   if (!entry) throw new Error(`unknown component "${name}"`);

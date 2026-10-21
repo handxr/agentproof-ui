@@ -19,6 +19,6 @@ export const check: Command = async ({ cwd }) => {
     json: { ok: !violations.length, violations },
     text: violations.length
       ? violations.map((v) => `${v.file}:${v.line} ${v.rule} ${v.message}`).join("\n") + `\n${violations.length} violation(s)`
-      : "ds check: no violations",
+      : "paper check: no violations",
   };
 };

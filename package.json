@@ -1,5 +1,5 @@
 {
-  "name": "design-system",
+  "name": "agentproof-ui",
   "private": true,
   "type": "module",
   "packageManager": "pnpm@10.0.0",
@@ -7,7 +7,7 @@
     "build:tokens": "tsx tokens/build.ts",
     "build:registry": "tsx scripts/build-registry.ts",
     "generate": "pnpm build:tokens && pnpm build:registry",
-    "build:cli": "pnpm --filter @ds/cli build",
+    "build:cli": "pnpm --filter @paper/cli build",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "lint": "eslint .",
     "test": "vitest run",
@@ -16,7 +16,7 @@
   },
   "devDependencies": {
     "@babel/core": "^8.0.7",
-    "@ds/core": "workspace:^",
+    "@paper/core": "workspace:^",
     "@eslint/js": "^10.0.1",
     "@stylexjs/babel-plugin": "^0.19.1",
     "@stylexjs/stylex": "^0.19.1",

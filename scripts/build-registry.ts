@@ -1,7 +1,7 @@
 import { readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
-import { extractProps } from "@ds/core/extract-props";
-import type { Doc } from "@ds/core/define-doc";
+import { extractProps } from "@paper/core/extract-props";
+import type { Doc } from "@paper/core/define-doc";
 import type { Registry, RegistryEntry } from "../packages/cli/src/schema.ts";
 import { rules } from "../registry/rules/index.ts";
 
@@ -49,7 +49,7 @@ export async function buildRegistry(): Promise<Registry> {
 }
 
 const practiceText = (p: RegistryEntry["practices"][number]) =>
-  ("do" in p ? `Do: ${p.do}` : `Don't: ${p.dont}`) + (p.rule ? ` (ds check: ${p.rule})` : "");
+  ("do" in p ? `Do: ${p.do}` : `Don't: ${p.dont}`) + (p.rule ? ` (paper check: ${p.rule})` : "");
 
 export function renderComponent(c: RegistryEntry): string {
   const props = c.props.map((p) => `- \`${p.name}${p.required ? "" : "?"}: ${p.type}\`${p.default ? ` = ${p.default}` : ""}. ${p.description}${p.note ? ` ${p.note}` : ""}`);
@@ -64,9 +64,9 @@ export function renderComponent(c: RegistryEntry): string {
 }
 
 const HEAD = (r: Registry) => [
-  "# design-system",
+  "# paper",
   "",
-  `> Agent-first, minimalist React design system styled with StyleX. v${r.version}. Components are copied into your project with the CLI: \`npx ds add <name>\`.`,
+  `> Agent-first, minimalist React design system styled with StyleX. v${r.version}. Components are copied into your project with the CLI: \`npx paper add <name>\`.`,
   "",
 ];
 
@@ -74,10 +74,10 @@ export function renderLlms(r: Registry): string {
   return [
     ...HEAD(r),
     "## Components", "",
-    ...r.components.map((c) => `- ${c.name}: ${c.summary} Docs: \`npx ds docs ${c.name}\`.`), "",
+    ...r.components.map((c) => `- ${c.name}: ${c.summary} Docs: \`npx paper docs ${c.name}\`.`), "",
     "## Tokens", "",
     "- [tokens.json](tokens/tokens.json): color, font, fontSize, fontWeight, lineHeight, space, radius, size. StyleX: `import { color, space } from \"./tokens.stylex\"`.", "",
-    "## Rules (`npx ds check`)", "",
+    "## Rules (`npx paper check`)", "",
     ...Object.entries(rules).map(([id, r]) => `- ${id}: ${r.description}`), "",
     "## Full docs", "", "- [llms-full.txt](llms-full.txt)", "",
   ].join("\n");

@@ -32,4 +32,4 @@ export const configSchema = z.object({
 export type Registry = z.infer<typeof registrySchema>;
 export type RegistryEntry = Registry["components"][number];
 export type RegistryFile = z.infer<typeof file>;
-export type DsConfig = z.infer<typeof configSchema>;
+export type PaperConfig = z.infer<typeof configSchema>;

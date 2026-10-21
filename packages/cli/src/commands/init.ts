@@ -6,7 +6,7 @@ export const init: Command = async ({ cwd, flags }) => {
   const existing = readConfig(cwd);
   const config = {
     registry: flags.registry ?? existing?.registry ?? DEFAULT_REGISTRY,
-    componentsDir: flags.dir ?? existing?.componentsDir ?? "src/components/ds",
+    componentsDir: flags.dir ?? existing?.componentsDir ?? "src/components/paper",
     installed: existing?.installed ?? [],
   };
   const registry = await loadRegistry(config.registry);
@@ -14,7 +14,7 @@ export const init: Command = async ({ cwd, flags }) => {
   const tokens = writeFiles(cwd, config, registry.tokens);
   const agentFile = writeAgentBlock(cwd, config, registry);
   return {
-    json: { config: "ds.json", tokens, agentFile },
-    text: [`wrote ds.json, ${tokens.join(", ")}, ${agentFile} (ds section)`, "requires: @stylexjs/stylex and a StyleX bundler plugin (e.g. @stylexjs/unplugin)"].join("\n"),
+    json: { config: "paper.json", tokens, agentFile },
+    text: [`wrote paper.json, ${tokens.join(", ")}, ${agentFile} (paper section)`, "requires: @stylexjs/stylex and a StyleX bundler plugin (e.g. @stylexjs/unplugin)"].join("\n"),
   };
 };

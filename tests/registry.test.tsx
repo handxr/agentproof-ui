@@ -30,7 +30,7 @@ describe.each(componentNames())("%s", (name) => {
     }
   });
 
-  test("every practice rule exists in ds check", () => {
+  test("every practice rule exists in paper check", () => {
     const entry = registry.components.find((c) => c.name === name)!;
     for (const p of entry.practices) if (p.rule) expect(Object.keys(rules)).toContain(p.rule);
   });

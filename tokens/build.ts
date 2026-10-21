@@ -16,7 +16,7 @@ export function loadTokens(): Tokens {
   return JSON.parse(readFileSync(root + "tokens/tokens.json", "utf8"));
 }
 
-const cssName = (group: string, key: string) => `--ds-${group.replace(/[A-Z]/g, (c) => "-" + c.toLowerCase())}-${key}`;
+const cssName = (group: string, key: string) => `--paper-${group.replace(/[A-Z]/g, (c) => "-" + c.toLowerCase())}-${key}`;
 
 export function toStylex(t: Tokens): string {
   const colors = Object.entries(t.color)

@@ -1,4 +1,4 @@
-import { defineDoc } from "@ds/core/define-doc";
+import { defineDoc } from "@paper/core/define-doc";
 import type { Input } from "./input";
 
 export default defineDoc<typeof Input>({

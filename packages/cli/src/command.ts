@@ -7,6 +7,6 @@ export class UsageError extends Error {}
 
 export function requireConfig(cwd: string) {
   const config = readConfig(cwd);
-  if (!config) throw new Error("no ds.json here; run `ds init` first");
+  if (!config) throw new Error("no paper.json here; run `paper init` first");
   return config;
 }

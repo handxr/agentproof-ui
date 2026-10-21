@@ -2,7 +2,7 @@ import { existsSync, readFileSync, statSync } from "node:fs";
 import { resolve } from "node:path";
 import { registrySchema, type Registry } from "./schema.ts";
 
-export const DEFAULT_REGISTRY = "github:handxr/design-system";
+export const DEFAULT_REGISTRY = "github:handxr/agentproof-ui";
 
 export function registryUrl(source: string): string {
   const gh = /^github:([^/#]+\/[^/#]+)(?:#(.+))?$/.exec(source);

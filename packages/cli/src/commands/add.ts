@@ -4,7 +4,7 @@ import { loadRegistry } from "../registry.ts";
 import { requireConfig, UsageError } from "../command.ts";
 
 export const add: Command = async ({ cwd, args, flags }) => {
-  if (!args.length) throw new UsageError("usage: ds add <name...>");
+  if (!args.length) throw new UsageError("usage: paper add <name...>");
   const config = requireConfig(cwd);
   const registry = await loadRegistry(flags.registry ?? config.registry);
   const entries = args.map((name) => {

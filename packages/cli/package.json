@@ -1,15 +1,15 @@
 {
-  "name": "@ds/cli",
+  "name": "@paper/cli",
   "version": "0.1.0",
   "type": "module",
   "bin": {
-    "ds": "./dist/ds.js"
+    "paper": "./dist/paper.js"
   },
   "files": [
     "dist"
   ],
   "scripts": {
-    "build": "esbuild src/index.ts --bundle --platform=node --format=esm --target=node20 --banner:js='#!/usr/bin/env node' --outfile=dist/ds.js"
+    "build": "esbuild src/index.ts --bundle --platform=node --format=esm --target=node20 --banner:js='#!/usr/bin/env node' --outfile=dist/paper.js"
   },
   "devDependencies": {
     "esbuild": "^0.28.2",

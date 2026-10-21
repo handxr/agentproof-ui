@@ -1,4 +1,4 @@
-# design-system
+# agentproof-ui
 
 A minimalist, agent-first React design system. Black on white, Geist, lots of air, a 35rem column (the style of [juanhander.com](https://www.juanhander.com/)). Styled with [StyleX](https://stylexjs.com).
 
@@ -7,17 +7,17 @@ Like shadcn, the CLI copies component code into your project. You own the copy; 
 ## Use it
 
 ```sh
-npx ds init                 # ds.json, src/components/ds/tokens.stylex.ts, AGENTS.md section
-npx ds add button input     # copy components
-npx ds docs button          # summary, when to use, practices, props, examples (--json for agents)
-npx ds check                # fails on raw colors outside tokens
+npx paper init                 # paper.json, src/components/paper/tokens.stylex.ts, AGENTS.md section
+npx paper add button input     # copy components
+npx paper docs button          # summary, when to use, practices, props, examples (--json for agents)
+npx paper check                # fails on raw colors outside tokens
 ```
 
 You need `@stylexjs/stylex` and a StyleX bundler plugin (for Vite: `@stylexjs/unplugin`).
 
 ## Fork it
 
-Everything lives in this repo. Point the CLI at your fork: `npx ds init --registry github:you/design-system`
+Everything lives in this repo. Point the CLI at your fork: `npx paper init --registry github:you/agentproof-ui`
 (or a local path / URL to a `registry.json`). Edit `tokens/tokens.json` and the components, run `pnpm generate`.
 
 ## For LLMs
