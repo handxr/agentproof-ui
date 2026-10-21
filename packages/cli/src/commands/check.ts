@@ -15,21 +15,23 @@ function sourceFiles(dir: string): string[] {
 }
 
 /** "stale" when the paper block differs from what the registry and paper.json would generate now. */
-async function agentBlockStatus(cwd: string, registryFlag: string | undefined): Promise<"ok" | "stale" | "missing" | undefined> {
+async function agentBlockStatus(cwd: string, registryFlag: string | undefined): Promise<"ok" | "stale" | "missing" | "malformed" | undefined> {
   const config = readConfig(cwd);
   if (!config) return undefined;
   const current = readAgentBlock(cwd);
   if (current === undefined) return "missing";
+  if (current === "malformed") return "malformed";
   return current === agentBlock(config, await loadRegistry(registryFlag ?? config.registry)) ? "ok" : "stale";
 }
 
 export const check: Command = async ({ cwd, flags }) => {
   const violations = sourceFiles(cwd).flatMap((f) => runRules(relative(cwd, f), readFileSync(f, "utf8")));
   const block = await agentBlockStatus(cwd, flags.registry);
-  const blockBad = block === "stale" || block === "missing";
+  const blockBad = block === "stale" || block === "missing" || block === "malformed";
   const lines = violations.map((v) => `${v.file}:${v.line} ${v.rule} ${v.message}`);
   if (violations.length) lines.push(`${violations.length} violation(s)`);
-  if (blockBad) lines.push(`${agentFile(cwd)}: paper block is ${block}; run \`paper update\``);
+  if (block === "malformed") lines.push(`${agentFile(cwd)}: paper block markers are broken; keep one <!-- paper:start --> followed by one <!-- paper:end -->, or remove both`);
+  else if (blockBad) lines.push(`${agentFile(cwd)}: paper block is ${block}; run \`paper update\``);
   const ok = !violations.length && !blockBad;
   return {
     exitCode: ok ? 0 : 1,

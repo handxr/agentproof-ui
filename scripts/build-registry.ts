@@ -2,7 +2,7 @@ import { readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { extractProps } from "@paper/core/extract-props";
 import type { Doc } from "@paper/core/define-doc";
-import type { Registry, RegistryEntry } from "../packages/cli/src/schema.ts";
+import { registrySchema, type Registry, type RegistryEntry } from "../packages/cli/src/schema.ts";
 import { rules } from "../registry/rules/index.ts";
 
 const root = import.meta.dirname + "/../";
@@ -37,7 +37,7 @@ async function buildEntry(name: string): Promise<RegistryEntry> {
 }
 
 export async function buildRegistry(): Promise<Registry> {
-  return {
+  return validate({
     version: JSON.parse(read(root + "packages/cli/package.json")).version,
     tokens: [
       { path: "tokens.stylex.ts", content: read(componentsDir + "tokens.stylex.ts") },
@@ -45,7 +45,14 @@ export async function buildRegistry(): Promise<Registry> {
     ],
     tokenValues: JSON.parse(read(root + "tokens/tokens.json"), (k, v) => (k === "$description" ? undefined : v)),
     components: await Promise.all(componentNames().map(buildEntry)),
-  };
+  });
+}
+
+/** The same schema the CLI applies when it loads a registry, so a broken one never gets written. */
+export function validate(r: Registry): Registry {
+  const parsed = registrySchema.safeParse(r);
+  if (!parsed.success) throw new Error(`invalid registry: ${parsed.error.issues.map((i) => i.message).join("; ")}`);
+  return parsed.data;
 }
 
 const practiceText = (p: RegistryEntry["practices"][number]) =>

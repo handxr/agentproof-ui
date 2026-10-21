@@ -1,11 +1,12 @@
 import type { Command } from "../command.ts";
-import { applyPlan, assertNoConflicts, planFiles, writeAgentBlock, writeConfig } from "../project.ts";
+import { applyPlan, assertAgentBlockWellFormed, assertNoConflicts, planFiles, writeAgentBlock, writeConfig } from "../project.ts";
 import { loadRegistry } from "../registry.ts";
 import { requireConfig, UsageError } from "../command.ts";
 
 export const add: Command = async ({ cwd, args, flags }) => {
   if (!args.length) throw new UsageError("usage: paper add <name...>");
   const config = requireConfig(cwd);
+  assertAgentBlockWellFormed(cwd);
   const registry = await loadRegistry(flags.registry ?? config.registry);
   const entries = args.map((name) => {
     const entry = registry.components.find((c) => c.name === name);

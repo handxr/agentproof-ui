@@ -1,6 +1,6 @@
 import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
-import { existsSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { beforeAll, expect, test } from "vitest";
@@ -191,4 +191,79 @@ test("check flags a stale AGENTS.md block and passes after update", () => {
   expect(paper(dir, "check").err + paper(dir, "check").out).toContain("paper update");
   paper(dir, "update");
   expect(JSON.parse(paper(dir, "check", "--json").out)).toMatchObject({ ok: true, agentBlock: "ok" });
+});
+
+const writeJson = (dir: string, f: string, v: unknown) => writeFileSync(join(dir, f), JSON.stringify(v));
+const registryJson = () => JSON.parse(read(repo, "registry/registry.json"));
+
+function custom(dir: string, edit: (r: ReturnType<typeof registryJson>) => void) {
+  const r = registryJson();
+  edit(r);
+  writeJson(dir, "reg.json", r);
+  return join(dir, "reg.json");
+}
+const paperWith = (dir: string, reg: string, ...args: string[]) => {
+  const r = spawnSync(process.execPath, [bin, ...args, "--registry", reg], { cwd: dir, encoding: "utf8" });
+  return { code: r.status, out: r.stdout, err: r.stderr };
+};
+
+test("a file deleted locally is a local change: add and update keep it deleted and exit 1 unless --force", () => {
+  const dir = installed("button");
+  rmSync(join(dir, BUTTON));
+  expect(paper(dir, "add", "button")).toMatchObject({ code: 1, err: expect.stringContaining(`${BUTTON} (deleted)`) });
+  const r = paper(dir, "update", "--json");
+  expect(r.code).toBe(1);
+  expect(JSON.parse(r.out)).toMatchObject({ updated: [], skipped: [BUTTON] });
+  expect(paper(dir, "update").out).toContain(`skipped (deleted locally): ${BUTTON}`);
+  expect(existsSync(join(dir, BUTTON))).toBe(false);
+  expect(paper(dir, "update", "--force").code).toBe(0);
+  expect(read(dir, BUTTON)).toBe(read(repo, "registry/components/button/button.tsx"));
+});
+
+test("update removes clean files the registry dropped and keeps modified ones unless --force", () => {
+  const dir = project();
+  const extra = (name: string) => `src/components/paper/button/${name}.ts`;
+  const withExtras = custom(dir, (r) => r.components[0].files.push({ path: "button/a.ts", content: "a\n" }, { path: "button/b.ts", content: "b\n" }));
+  paperWith(dir, withExtras, "init");
+  paperWith(dir, withExtras, "add", "button");
+  writeFileSync(join(dir, extra("b")), "b mine\n");
+  const plain = custom(dir, () => {});
+
+  const r = paperWith(dir, plain, "update", "--json");
+  expect(r.code).toBe(1);
+  expect(JSON.parse(r.out)).toMatchObject({ removed: [extra("a")], skipped: [extra("b")] });
+  expect(existsSync(join(dir, extra("a")))).toBe(false);
+  expect(read(dir, extra("b"))).toBe("b mine\n");
+  expect(Object.keys(JSON.parse(read(dir, "paper.json")).installed.button.files)).toEqual([extra("b"), BUTTON].sort());
+
+  expect(paperWith(dir, plain, "update", "--force").code).toBe(0);
+  expect(existsSync(join(dir, extra("b")))).toBe(false);
+  expect(Object.keys(JSON.parse(read(dir, "paper.json")).installed.button.files)).toEqual([BUTTON]);
+  expect(paperWith(dir, plain, "update").code).toBe(0);
+});
+
+test("a registry where two entries ship the same path is rejected", () => {
+  const dir = project();
+  const dup = custom(dir, (r) => (r.components[1].files[0].path = "button/button.tsx"));
+  const r = paperWith(dir, dup, "init");
+  expect(r.code).toBe(1);
+  expect(r.err).toContain('duplicate file path "button/button.tsx": shipped by component "button" and component "input"');
+  const clash = custom(dir, (r) => (r.components[0].files[0].path = "tokens.css"));
+  expect(paperWith(dir, clash, "list").err).toContain('shipped by tokens and component "button"');
+});
+
+test("a broken paper block fails init, add and update without touching AGENTS.md, and check reports it", () => {
+  const dir = installed("button");
+  const broken = "# Notes\n<!-- paper:start -->\nhalf-written\n\nMy own text.\n";
+  writeFileSync(join(dir, "AGENTS.md"), broken);
+  for (const args of [["init"], ["add", "input"], ["update"]]) {
+    expect(paper(dir, ...args)).toMatchObject({ code: 1, err: expect.stringContaining("paper block markers are broken") });
+    expect(read(dir, "AGENTS.md")).toBe(broken);
+  }
+  expect(existsSync(join(dir, "src/components/paper/input"))).toBe(false);
+  const r = paper(dir, "check", "--json");
+  expect(r.code).toBe(1);
+  expect(JSON.parse(r.out)).toMatchObject({ ok: false, agentBlock: "malformed" });
+  writeFileSync(join(dir, "AGENTS.md"), "<!-- paper:end -->\n<!-- paper:start -->\n");
+  expect(JSON.parse(paper(dir, "check", "--json").out)).toMatchObject({ agentBlock: "malformed" });
 });

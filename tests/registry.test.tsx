@@ -3,7 +3,7 @@ import { render } from "@testing-library/react";
 import { describe, expect, test } from "vitest";
 import { registrySchema } from "../packages/cli/src/schema.ts";
 import { rules } from "../registry/rules/index.ts";
-import { componentNames } from "../scripts/build-registry.ts";
+import { componentNames, validate } from "../scripts/build-registry.ts";
 
 const dir = import.meta.dirname + "/../registry/components/";
 const registry = registrySchema.parse(JSON.parse(readFileSync(import.meta.dirname + "/../registry/registry.json", "utf8")));
@@ -38,4 +38,10 @@ describe.each(componentNames())("%s", (name) => {
   test("component styles only use tokens", () => {
     expect(rules["no-raw-color"].check(`${name}.tsx`, readFileSync(`${dir}${name}/${name}.tsx`, "utf8"))).toEqual([]);
   });
+});
+
+test("build-registry refuses a registry where two entries ship the same path", () => {
+  const dup = structuredClone(registry);
+  dup.components[1].files[0].path = dup.components[0].files[0].path;
+  expect(() => validate(dup)).toThrow(/duplicate file path "button\/button.tsx"/);
 });

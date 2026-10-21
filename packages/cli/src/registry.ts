@@ -24,6 +24,6 @@ export async function loadRegistry(source: string): Promise<Registry> {
     raw = readFileSync(file, "utf8");
   }
   const parsed = registrySchema.safeParse(JSON.parse(raw));
-  if (!parsed.success) throw new Error(`invalid registry ${url}: ${parsed.error.message}`);
+  if (!parsed.success) throw new Error(`invalid registry ${url}: ${parsed.error.issues.map((i) => `${i.path.join(".") || "registry"}: ${i.message}`).join("; ")}`);
   return parsed.data;
 }

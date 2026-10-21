@@ -1,5 +1,5 @@
 import type { Command } from "../command.ts";
-import { applyPlan, assertNoConflicts, planFiles, readConfig, writeAgentBlock, writeConfig } from "../project.ts";
+import { applyPlan, assertAgentBlockWellFormed, assertNoConflicts, planFiles, readConfig, writeAgentBlock, writeConfig } from "../project.ts";
 import { DEFAULT_REGISTRY, loadRegistry } from "../registry.ts";
 
 export const init: Command = async ({ cwd, flags }) => {
@@ -10,6 +10,7 @@ export const init: Command = async ({ cwd, flags }) => {
     installed: existing?.installed ?? {},
     tokens: existing?.tokens ?? { files: {} },
   };
+  assertAgentBlockWellFormed(cwd);
   const registry = await loadRegistry(config.registry);
   const plan = planFiles(cwd, config, config.tokens, registry.tokens);
   assertNoConflicts(plan, flags.force);
