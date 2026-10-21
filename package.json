@@ -1,6 +1,12 @@
 {
   "name": "agentproof-ui",
   "private": true,
+  "description": "A reference architecture for design systems that AI agents can use correctly.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/handxr/agentproof-ui.git"
+  },
   "type": "module",
   "packageManager": "pnpm@10.0.0",
   "scripts": {
