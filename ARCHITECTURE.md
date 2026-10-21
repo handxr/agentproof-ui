@@ -83,7 +83,7 @@ The CLI parses `registry.json` and `paper.json` with zod in `packages/cli/src/sc
   It rewrites the block between `<!-- paper:start -->` and `<!-- paper:end -->` in place, or appends the block if it is missing.
 - `add` writes the component files, fails on locally modified ones unless `--force`, keeps `installed` sorted, and rewrites the block.
 - `update` replaces files that still match their recorded hash and skips the rest. See [Updates](docs/updates.md).
-Running either twice gives byte-identical files.
+Running any of them twice gives byte-identical files.
 
 ## Agent file
 
