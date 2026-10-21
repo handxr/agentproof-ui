@@ -1,5 +1,6 @@
 import { spawnSync } from "node:child_process";
-import { existsSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
+import { createHash } from "node:crypto";
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { beforeAll, expect, test } from "vitest";
@@ -25,7 +26,9 @@ test("init writes paper.json, StyleX tokens and an AGENTS.md section, and is ide
   writeFileSync(join(dir, "AGENTS.md"), "# My project\n\nOwn rules.\n");
   expect(paper(dir, "init").code).toBe(0);
   const first = { agents: read(dir, "AGENTS.md"), config: read(dir, "paper.json") };
-  expect(JSON.parse(first.config)).toEqual({ registry: repo, componentsDir: "src/components/paper", installed: [] });
+  const config = JSON.parse(first.config);
+  expect(config).toMatchObject({ registry: repo, componentsDir: "src/components/paper", installed: {} });
+  expect(config.tokens.files["src/components/paper/tokens.stylex.ts"]).toMatch(/^[0-9a-f]{64}$/);
   expect(read(dir, "src/components/paper/tokens.stylex.ts")).toContain("stylex.defineVars");
   expect(first.agents.startsWith("# My project\n\nOwn rules.\n")).toBe(true);
   expect(first.agents).toContain("@stylexjs/unplugin");
@@ -54,7 +57,9 @@ test("add copies the component, records it once and lists it in the agent sectio
   expect(read(dir, "src/components/paper/button/button.tsx")).toBe(read(repo, "registry/components/button/button.tsx"));
   paper(dir, "add", "button");
   paper(dir, "add", "input");
-  expect(JSON.parse(read(dir, "paper.json")).installed).toEqual(["button", "input"]);
+  const installed = JSON.parse(read(dir, "paper.json")).installed;
+  expect(Object.keys(installed)).toEqual(["button", "input"]);
+  expect(Object.keys(installed.button.files)).toEqual(["src/components/paper/button/button.tsx"]);
   expect(read(dir, "AGENTS.md")).toContain("Installed: button, input.");
 });
 
@@ -93,4 +98,78 @@ test("check fails on raw colors in stylex.create and passes with tokens", () => 
 
 test("unknown command exits 2 with usage", () => {
   expect(paper(project(), "nope")).toMatchObject({ code: 2, err: expect.stringContaining("usage: paper") });
+});
+
+const BUTTON = "src/components/paper/button/button.tsx";
+
+function installed(...names: string[]) {
+  const dir = project();
+  paper(dir, "init");
+  if (names.length) paper(dir, "add", ...names);
+  return dir;
+}
+
+test("add refuses to overwrite a locally modified file unless --force", () => {
+  const dir = installed("button");
+  writeFileSync(join(dir, BUTTON), "// mine\n");
+  const r = paper(dir, "add", "button");
+  expect(r).toMatchObject({ code: 1, err: expect.stringContaining(BUTTON) });
+  expect(read(dir, BUTTON)).toBe("// mine\n");
+  expect(paper(dir, "add", "button", "--force").code).toBe(0);
+  expect(read(dir, BUTTON)).toBe(read(repo, "registry/components/button/button.tsx"));
+});
+
+test("add refuses an unrecorded file that differs from the registry, and accepts an identical one", () => {
+  const dir = installed();
+  mkdirSync(join(dir, "src/components/paper/button"), { recursive: true });
+  writeFileSync(join(dir, BUTTON), read(repo, "registry/components/button/button.tsx"));
+  expect(paper(dir, "add", "button").code).toBe(0);
+  const other = installed();
+  mkdirSync(join(other, "src/components/paper/button"), { recursive: true });
+  writeFileSync(join(other, BUTTON), "// someone else's button\n");
+  expect(paper(other, "add", "button").code).toBe(1);
+});
+
+test("update rewrites files paper wrote, skips local changes and exits 1 unless --force", () => {
+  const dir = installed("button", "input");
+  const input = "src/components/paper/input/input.tsx";
+  // Simulate an older registry version: the file on disk matches its record but not the registry.
+  const config = JSON.parse(read(dir, "paper.json"));
+  writeFileSync(join(dir, input), "// old input\n");
+  config.installed.input.files[input] = createHash("sha256").update("// old input\n").digest("hex");
+  writeFileSync(join(dir, "paper.json"), JSON.stringify(config));
+  writeFileSync(join(dir, BUTTON), "// mine\n");
+
+  const r = paper(dir, "update", "--json");
+  expect(r.code).toBe(1);
+  const out = JSON.parse(r.out);
+  expect(out.updated).toEqual([input]);
+  expect(out.skipped).toEqual([BUTTON]);
+  expect(out.unchanged).toContain("src/components/paper/tokens.stylex.ts");
+  expect(read(dir, input)).toBe(read(repo, "registry/components/input/input.tsx"));
+  expect(read(dir, BUTTON)).toBe("// mine\n");
+
+  expect(paper(dir, "update", "button", "--force").code).toBe(0);
+  expect(read(dir, BUTTON)).toBe(read(repo, "registry/components/button/button.tsx"));
+  expect(JSON.parse(paper(dir, "update", "--json").out)).toMatchObject({ updated: [], skipped: [] });
+});
+
+test("update reads an old paper.json with installed as a list and writes the record form", () => {
+  const dir = installed("button");
+  writeFileSync(join(dir, "paper.json"), JSON.stringify({ registry: repo, componentsDir: "src/components/paper", installed: ["button"] }));
+  expect(paper(dir, "update").code).toBe(0);
+  const config = JSON.parse(read(dir, "paper.json"));
+  expect(Object.keys(config.installed.button.files)).toEqual([BUTTON]);
+  expect(Object.keys(config.tokens.files).length).toBeGreaterThan(0);
+});
+
+test("check flags a stale AGENTS.md block and passes after update", () => {
+  const dir = installed("button");
+  writeFileSync(join(dir, "AGENTS.md"), read(dir, "AGENTS.md").replace("Installed: button.", "Installed: none yet."));
+  const r = paper(dir, "check", "--json");
+  expect(r.code).toBe(1);
+  expect(JSON.parse(r.out)).toMatchObject({ ok: false, violations: [], agentBlock: "stale" });
+  expect(paper(dir, "check").err + paper(dir, "check").out).toContain("paper update");
+  paper(dir, "update");
+  expect(JSON.parse(paper(dir, "check", "--json").out)).toMatchObject({ ok: true, agentBlock: "ok" });
 });

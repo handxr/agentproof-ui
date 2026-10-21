@@ -1,6 +1,6 @@
 import { readConfig } from "./project.ts";
 
-export type Flags = { json?: boolean; registry?: string; dir?: string };
+export type Flags = { json?: boolean; registry?: string; dir?: string; force?: boolean };
 export type Command = (ctx: { cwd: string; args: string[]; flags: Flags }) => Promise<{ json: unknown; text: string; exitCode?: number }>;
 
 export class UsageError extends Error {}

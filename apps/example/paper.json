@@ -1,8 +1,22 @@
 {
   "registry": "../..",
   "componentsDir": "src/components/paper",
-  "installed": [
-    "button",
-    "input"
-  ]
+  "installed": {
+    "button": {
+      "files": {
+        "src/components/paper/button/button.tsx": "c78fe092db23d6149693a9db7da8852a4553eac4c8363b7723e5359c7fc551b1"
+      }
+    },
+    "input": {
+      "files": {
+        "src/components/paper/input/input.tsx": "b652336477248a53c5272341a1f1250fa520633c467afad43e644801ac8bc3f1"
+      }
+    }
+  },
+  "tokens": {
+    "files": {
+      "src/components/paper/tokens.css": "d664f0c9f2934a80f3952eef42c50f09e475b991b6afdb1804aae22a87a813ce",
+      "src/components/paper/tokens.stylex.ts": "010f96df2b9d7199d2e5bb1ed88c9b59bb82760bd15252df10625de8ec8ef26e"
+    }
+  }
 }

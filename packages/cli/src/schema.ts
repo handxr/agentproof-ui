@@ -23,13 +23,20 @@ export const registrySchema = z.object({
   ),
 });
 
+// path (relative to the project) -> sha256 of the content paper wrote there
+const written = z.object({ files: z.record(z.string(), z.string()) });
+const legacyInstalled = z.array(z.string()).transform((names) => Object.fromEntries(names.map((n) => [n, { files: {} }])));
+
 export const configSchema = z.object({
   registry: z.string(),
   componentsDir: z.string(),
-  installed: z.array(z.string()),
+  // Old configs stored only names. They read as installed with no recorded files.
+  installed: z.union([legacyInstalled, z.record(z.string(), written)]),
+  tokens: written.default({ files: {} }),
 });
 
 export type Registry = z.infer<typeof registrySchema>;
 export type RegistryEntry = Registry["components"][number];
 export type RegistryFile = z.infer<typeof file>;
-export type PaperConfig = z.infer<typeof configSchema>;
+export type PaperConfig = z.output<typeof configSchema>;
+export type Written = z.infer<typeof written>;

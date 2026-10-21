@@ -3,18 +3,20 @@ import { check } from "./commands/check.ts";
 import { docs } from "./commands/docs.ts";
 import { init } from "./commands/init.ts";
 import { list } from "./commands/list.ts";
+import { update } from "./commands/update.ts";
 import { tokens } from "./commands/tokens.ts";
 import { UsageError, type Command, type Flags } from "./command.ts";
 
-const commands: Record<string, Command> = { init, add, list, docs, tokens, check };
+const commands: Record<string, Command> = { init, add, list, docs, tokens, check, update };
 
 const USAGE = `usage: paper <command> [--json] [--registry <path|url|github:user/repo>]
   init [--dir <componentsDir>]  write paper.json, tokens and the AGENTS.md section
-  add <name...>                 copy components into your project
+  add <name...> [--force]       copy components; refuses to overwrite local changes without --force
+  update [name...] [--force]    update installed components and tokens, skipping local changes
   list                          components in the registry
   docs <name>                   summary, use/avoid, practices, props, examples
   tokens                        design tokens
-  check                         lint the project against the system (exit 1 on violations)`;
+  check                         lint the project against the system and the AGENTS.md block (exit 1 on violations)`;
 
 function parse(argv: string[]): { command?: string; args: string[]; flags: Flags } {
   const flags: Flags = {};
@@ -22,6 +24,7 @@ function parse(argv: string[]): { command?: string; args: string[]; flags: Flags
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
     if (a === "--json") flags.json = true;
+    else if (a === "--force") flags.force = true;
     else if (a === "--registry" || a === "--dir") {
       const value = argv[++i];
       if (!value) throw new UsageError(`${a} needs a value`);
