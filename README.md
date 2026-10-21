@@ -18,6 +18,13 @@ The example design system is `paper`: black on white, Geist, a 35rem column, sty
 
 ![apps/example](docs/example.png)
 
+## Background
+
+Two essays explain the reasoning:
+
+- [The Agent Needs a Vocabulary](https://www.juanhander.com/the-agent-needs-a-vocabulary/): an agent has no team memory, so the design system is the vocabulary it builds with.
+- [CLIs and Skills](https://www.juanhander.com/clis-and-skills/): use commands for procedures that can be specified exactly, and skills for decisions that need judgment. This is why `paper` is a CLI.
+
 ## Quick start
 
 Requires Node 24 (LTS) and pnpm.
